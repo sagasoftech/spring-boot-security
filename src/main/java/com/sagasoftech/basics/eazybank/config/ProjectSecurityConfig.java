@@ -1,7 +1,5 @@
 package com.sagasoftech.basics.eazybank.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,9 +10,11 @@ public class ProjectSecurityConfig {
 
 	@Bean
 	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
-		http.formLogin(withDefaults());
-		http.httpBasic(withDefaults());
+		http.authorizeHttpRequests()
+			.requestMatchers("/myAccount", "/myBalance","/myLoans","/myCards").authenticated()
+			.requestMatchers("/notices","/contact").permitAll()
+			.and().formLogin()
+			.and().httpBasic();
 		return http.build();
 	}
 }
