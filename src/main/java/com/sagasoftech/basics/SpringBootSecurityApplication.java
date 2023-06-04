@@ -10,8 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
  * where spring boot application main class is present
  * However, it required if controller class are outside of the package of spring boot main class
  */
-@ComponentScan("com.sagasoftech.basics.controller")
-@ComponentScan("com.sagasoftech.basics.eazybank.controller")
+//@ComponentScan("com.sagasoftech.basics.controller")
+//@ComponentScan("com.sagasoftech.basics.eazybank.controller")
 public class SpringBootSecurityApplication {
 
 	public static void main(String[] args) {
