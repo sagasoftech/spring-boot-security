@@ -8,6 +8,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -36,7 +38,7 @@ public class ProjectSecurityConfig {
 		 * Approach 1 where we use withDefaultPasswordEncoder() method 
 		 * while creating the user details
 		 */
-		UserDetails admin = User.withDefaultPasswordEncoder()
+		/*UserDetails admin = User.withDefaultPasswordEncoder()
 				.username("admin")
 				.password("123456")
 				.authorities("admin")
@@ -48,6 +50,32 @@ public class ProjectSecurityConfig {
 				.authorities("read")
 				.build();
 		
+		return new InMemoryUserDetailsManager(admin, user);*/
+		
+		/*
+		 * Approach 1 where we use NoOpPasswordEncoder 
+		 * while creating the user details
+		 */
+		UserDetails admin = User.withUsername("admin")
+				.password("123456")
+				.authorities("admin")
+				.build();
+
+		UserDetails user = User.withUsername("user")
+				.password("123456")
+				.authorities("read")
+				.build();
+		
 		return new InMemoryUserDetailsManager(admin, user);
+	}
+	
+	/*
+	 * This will return PasswordEncoder that will get used for application
+	 * If not added, it will throw below error, because our customized InMemoryUserDetailsManager does not have encoder now
+	 * 'There is no PasswordEncoder mapped'
+	 */
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return NoOpPasswordEncoder.getInstance();
 	}
 }
