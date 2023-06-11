@@ -73,10 +73,12 @@ public class ProjectSecurityConfig {
 //		return new InMemoryUserDetailsManager(admin, user);
 //	}
 	
+	/*
 	@Bean
 	public UserDetailsService userDetailsService(DataSource dataSource) {
 		return new JdbcUserDetailsManager(dataSource);
 	}
+	*/
 	
 	/*
 	 * This will return PasswordEncoder that will get used for application
