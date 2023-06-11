@@ -53,7 +53,7 @@ public class ProjectSecurityConfig {
 		return new InMemoryUserDetailsManager(admin, user);*/
 		
 		/*
-		 * Approach 1 where we use NoOpPasswordEncoder 
+		 * Approach 2 where we use NoOpPasswordEncoder 
 		 * while creating the user details
 		 */
 		UserDetails admin = User.withUsername("admin")
