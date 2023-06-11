@@ -20,3 +20,15 @@ create unique index ix_auth_username on authorities (username,authority);
 
 INSERT IGNORE INTO users VALUES('happy', '123456', 1);
 INSERT IGNORE INTO authorities VALUES('happy', 'write');
+
+
+create table customer(
+    id INT NOT NULL AUTO_INCREMENT,
+	email VARCHAR(45) NOT NULL,
+	pwd VARCHAR(200) NOT NULL,
+	role VARCHAR(45) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+insert into customer (email, pwd, role)
+values ('johndoe@example.com', '654321', 'admin');
