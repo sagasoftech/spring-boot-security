@@ -26,7 +26,8 @@ public class ProjectSecurityConfig {
 		//http.authorizeHttpRequests((requests) -> requests.anyRequest().denyAll());
 		//http.authorizeHttpRequests((requests) -> requests.anyRequest().permitAll());
 			
-		http.authorizeHttpRequests((requests) -> requests
+		http.csrf().disable()
+			.authorizeHttpRequests((requests) -> requests
 			.requestMatchers("/myAccount", "/myBalance","/myLoans","/myCards").authenticated()
 			.requestMatchers("/notices","/contact", "/register").permitAll());
 		http.formLogin(withDefaults());
