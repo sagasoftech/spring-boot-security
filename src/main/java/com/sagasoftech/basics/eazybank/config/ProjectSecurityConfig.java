@@ -2,6 +2,8 @@ package com.sagasoftech.basics.eazybank.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import java.util.Collections;
+
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
@@ -17,6 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 public class ProjectSecurityConfig {
@@ -27,7 +33,18 @@ public class ProjectSecurityConfig {
 		//http.authorizeHttpRequests((requests) -> requests.anyRequest().denyAll());
 		//http.authorizeHttpRequests((requests) -> requests.anyRequest().permitAll());
 			
-		http.csrf().disable()
+		http.cors().configurationSource(new CorsConfigurationSource() {
+            @Override
+            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+                config.setAllowedMethods(Collections.singletonList("*"));
+                config.setAllowCredentials(true);
+                config.setAllowedHeaders(Collections.singletonList("*"));
+                config.setMaxAge(3600L);
+                return config;
+            }}).and()
+			.csrf().disable()
 			.authorizeHttpRequests((requests) -> requests
 			.requestMatchers("/myAccount", "/myBalance","/myLoans","/myCards").authenticated()
 			.requestMatchers("/notices","/contact", "/register").permitAll());
