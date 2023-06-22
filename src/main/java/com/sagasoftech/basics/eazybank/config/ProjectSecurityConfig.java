@@ -43,10 +43,10 @@ public class ProjectSecurityConfig {
                 config.setAllowedHeaders(Collections.singletonList("*"));
                 config.setMaxAge(3600L);
                 return config;
-            }}).and()
-			.authorizeHttpRequests((requests) -> requests
-			.requestMatchers("/myAccount", "/myBalance","/myLoans","/myCards").authenticated()
-			.requestMatchers("/notices","/contact", "/register").permitAll());
+            }}).and().csrf().ignoringRequestMatchers("/contact", "/register")
+			.and().authorizeHttpRequests((requests) -> requests
+				.requestMatchers("/myAccount", "/myBalance","/myLoans","/myCards").authenticated()
+				.requestMatchers("/notices","/contact", "/register").permitAll());
 		http.formLogin(withDefaults());
 		http.httpBasic(withDefaults());
 		
