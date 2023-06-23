@@ -35,7 +35,7 @@ public class EazyBankUsernamePwdAuthenticationProvider implements Authentication
 			if(passwordEncoder.matches(pwd, customer.get(0).getPwd())) {
 				List<GrantedAuthority> authorities = new ArrayList<>();
 				authorities.add(new SimpleGrantedAuthority(customer.get(0).getRole()));
-				return new UsernamePasswordAuthenticationToken(customer, pwd, authorities);
+				return new UsernamePasswordAuthenticationToken(userName, pwd, authorities);
 			}else {
 				throw new BadCredentialsException("Invalid Passworrd!");
 			}
