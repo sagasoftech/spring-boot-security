@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,8 +20,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+
+import com.sagasoftech.basics.eazybank.filter.CsrfCookieFilter;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -32,8 +38,19 @@ public class ProjectSecurityConfig {
 		
 		//http.authorizeHttpRequests((requests) -> requests.anyRequest().denyAll());
 		//http.authorizeHttpRequests((requests) -> requests.anyRequest().permitAll());
-			
-		http.cors().configurationSource(new CorsConfigurationSource() {
+		
+		/*
+		 * Get CSRF token value as an Header and Cookies to the UI application  
+		 */
+		CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+		requestHandler.setCsrfRequestAttributeName("_csrf");
+			/*
+			 * Request to Spring Security to always create JSESSIONID after initial login is completed.
+			 * Without this, we need to share credentials every time we try to access the secured API. 
+			 */
+		http.securityContext().requireExplicitSave(false)
+			.and().sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+			.cors().configurationSource(new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration config = new CorsConfiguration();
@@ -43,9 +60,21 @@ public class ProjectSecurityConfig {
                 config.setAllowedHeaders(Collections.singletonList("*"));
                 config.setMaxAge(3600L);
                 return config;
-            }}).and().csrf().ignoringRequestMatchers("/contact", "/register")
-			.and().authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/myAccount", "/myBalance","/myLoans","/myCards").authenticated()
+            }}).and().csrf((csrf)-> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/contact", "/register")
+            		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+					/*
+					 * CookieCsrfTokenRepository - persists the CSRF token in a cookie named"XSRF-TOKEN" 
+					 * and reads from the header "X-XSRF-TOKEN"
+					 * 
+					 * HttpOnlyFalse so that JavaScript code deployed in angular application can read the cookie
+					 * 
+					 */
+				/*
+				 * Filter to send cookies and header value to the UI application after initial login
+				 */
+				.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+				.authorizeHttpRequests((requests) -> requests
+				.requestMatchers("/myAccount", "/myBalance","/myLoans","/myCards", "/user").authenticated()
 				.requestMatchers("/notices","/contact", "/register").permitAll());
 		http.formLogin(withDefaults());
 		http.httpBasic(withDefaults());
