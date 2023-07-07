@@ -1,8 +1,19 @@
 package com.sagasoftech.basics.eazybank.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import java.util.Set;
+
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Customer {
@@ -20,6 +31,10 @@ public class Customer {
     @Column(name = "mobile_number")
     private String mobileNumber;
 
+    /*
+     * To mention that the field is always needed inside the request coming from UI to backend
+     * But don't want to send password details back to the UI
+     */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String pwd;
 
@@ -28,6 +43,10 @@ public class Customer {
     @Column(name = "create_dt")
     private String createDt;
 
+    @JsonIgnore  //To avoid this field sending back in JSON response 
+    @OneToMany(mappedBy="customer",fetch=FetchType.EAGER)
+    private Set<Authority> authorities;
+    
     public int getId() {
         return id;
     }
@@ -82,5 +101,13 @@ public class Customer {
 
     public void setCreateDt(String createDt) {
         this.createDt = createDt;
+    }
+    
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
 }

@@ -2,6 +2,7 @@ package com.sagasoftech.basics.eazybank.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.sagasoftech.basics.eazybank.model.Authority;
 import com.sagasoftech.basics.eazybank.model.Customer;
 import com.sagasoftech.basics.eazybank.repository.CustomerRepository;
 
@@ -33,9 +35,7 @@ public class EazyBankUsernamePwdAuthenticationProvider implements Authentication
 		List<Customer> customer = customerRepository.findByEmail(userName);
 		if(customer.size() > 0) {
 			if(passwordEncoder.matches(pwd, customer.get(0).getPwd())) {
-				List<GrantedAuthority> authorities = new ArrayList<>();
-				authorities.add(new SimpleGrantedAuthority(customer.get(0).getRole()));
-				return new UsernamePasswordAuthenticationToken(userName, pwd, authorities);
+				return new UsernamePasswordAuthenticationToken(userName, pwd, getGrantedAuthorities(customer.get(0).getAuthorities()));
 			}else {
 				throw new BadCredentialsException("Invalid Passworrd!");
 			}
@@ -44,6 +44,14 @@ public class EazyBankUsernamePwdAuthenticationProvider implements Authentication
 		}
 	}
 
+    private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities) {
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        for (Authority authority : authorities) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+        }
+        return grantedAuthorities;
+    }
+    
 	@Override
 	public boolean supports(Class<?> authentication) {
 		return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
