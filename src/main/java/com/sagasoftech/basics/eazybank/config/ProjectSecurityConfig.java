@@ -27,6 +27,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.sagasoftech.basics.eazybank.filter.CsrfCookieFilter;
+import com.sagasoftech.basics.eazybank.filter.RequestValidationBeforeFilter;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -73,6 +74,7 @@ public class ProjectSecurityConfig {
 				 * Filter to send cookies and header value to the UI application after initial login
 				 */
 				.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+				.addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
 				.authorizeHttpRequests((requests) -> requests
 				/*
 				.requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
