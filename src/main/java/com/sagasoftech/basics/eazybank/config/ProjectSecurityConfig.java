@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.sagasoftech.basics.eazybank.filter.AuthoritiesLoggingAfterFilter;
+import com.sagasoftech.basics.eazybank.filter.AuthoritiesLoggingAtFilter;
 import com.sagasoftech.basics.eazybank.filter.CsrfCookieFilter;
 import com.sagasoftech.basics.eazybank.filter.RequestValidationBeforeFilter;
 
@@ -68,6 +69,7 @@ public class ProjectSecurityConfig {
 				.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
 				.addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
 				.addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+				.addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
 				.authorizeHttpRequests((requests) -> requests
 				/*
 				.requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
