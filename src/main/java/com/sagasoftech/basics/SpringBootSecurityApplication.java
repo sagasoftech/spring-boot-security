@@ -3,6 +3,7 @@ package com.sagasoftech.basics;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @SpringBootApplication
 /*
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 //@ComponentScan("com.sagasoftech.basics.controller")
 //@ComponentScan("com.sagasoftech.basics.eazybank.controller")
+@EnableWebSecurity(debug = true)
 public class SpringBootSecurityApplication {
 
 	public static void main(String[] args) {
