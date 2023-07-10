@@ -2,6 +2,7 @@ package com.sagasoftech.basics.eazybank.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
@@ -42,8 +43,10 @@ public class ProjectSecurityConfig {
 			 * Request to Spring Security to always create JSESSIONID after initial login is completed.
 			 * Without this, we need to share credentials every time we try to access the secured API. 
 			 */
-		http.securityContext().requireExplicitSave(false)
-			.and().sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+		http/*.securityContext().requireExplicitSave(false)
+			.and().sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))*/
+			/* To avoid generating JSESSIONID or any HTTP Sessions*/
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.cors().configurationSource(new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
@@ -52,6 +55,8 @@ public class ProjectSecurityConfig {
                 config.setAllowedMethods(Collections.singletonList("*"));
                 config.setAllowCredentials(true);
                 config.setAllowedHeaders(Collections.singletonList("*"));
+                /*Expose Header from backend application to UI application */
+                config.setExposedHeaders(Arrays.asList("Authorization"));
                 config.setMaxAge(3600L);
                 return config;
             }}).and().csrf((csrf)-> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/contact", "/register")
