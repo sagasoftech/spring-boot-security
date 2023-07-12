@@ -16,7 +16,7 @@ public interface LoanRepository extends CrudRepository<Loans, Long> {
 	 * 
 	 * Only users who have role as USER can access this method
 	 */
-	@PreAuthorize("hasRole('USER')")
+	//@PreAuthorize("hasRole('USER')")
 	List<Loans> findByCustomerIdOrderByStartDtDesc(int customerId);
 
 }
