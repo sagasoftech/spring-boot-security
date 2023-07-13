@@ -48,8 +48,8 @@ public class ProjectSecurityConfig {
 		http/*.securityContext().requireExplicitSave(false)
 			.and().sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))*/
 			/* To avoid generating JSESSIONID or any HTTP Sessions*/
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.cors().configurationSource(new CorsConfigurationSource() {
+        	.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        	.cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration config = new CorsConfiguration();
@@ -61,7 +61,8 @@ public class ProjectSecurityConfig {
                 config.setExposedHeaders(Arrays.asList("Authorization"));
                 config.setMaxAge(3600L);
                 return config;
-            }}).and().csrf((csrf)-> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/contact", "/register")
+            }
+            })).csrf((csrf)-> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/contact", "/register")
             		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 					/*
 					 * CookieCsrfTokenRepository - persists the CSRF token in a cookie named"XSRF-TOKEN" 
