@@ -19,8 +19,8 @@ import com.sagasoftech.basics.eazybank.model.Authority;
 import com.sagasoftech.basics.eazybank.model.Customer;
 import com.sagasoftech.basics.eazybank.repository.CustomerRepository;
 
-@Component
-public class EazyBankUsernamePwdAuthenticationProvider implements AuthenticationProvider{
+//@Component
+public class EazyBankUsernamePwdAuthenticationProvider /*implements AuthenticationProvider*/{/*
 
 	@Autowired
 	private CustomerRepository customerRepository;
@@ -56,5 +56,5 @@ public class EazyBankUsernamePwdAuthenticationProvider implements Authentication
 	public boolean supports(Class<?> authentication) {
 		return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
 	}
-
+*/
 }
