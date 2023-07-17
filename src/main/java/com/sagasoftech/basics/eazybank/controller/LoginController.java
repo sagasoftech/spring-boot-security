@@ -20,8 +20,8 @@ public class LoginController {
 
     @Autowired
     private CustomerRepository customerRepository;
-
-    @Autowired
+    
+    /*@Autowired
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
@@ -44,8 +44,8 @@ public class LoginController {
                     .body("An exception occured due to " + ex.getMessage());
         }
         return response;
-    }
-
+    }*/
+    
     @RequestMapping("/user")
     public Customer getUserDetailsAfterLogin(Authentication authentication) {
         List<Customer> customers = customerRepository.findByEmail(authentication.getName());
