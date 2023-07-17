@@ -151,8 +151,8 @@ public class ProjectSecurityConfig {
 	 * If not added, it will throw below error, because our customized InMemoryUserDetailsManager does not have encoder now
 	 * 'There is no PasswordEncoder mapped'
 	 */
-	@Bean
+	/*@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}
+	}*/
 }
