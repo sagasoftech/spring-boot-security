@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -41,6 +42,14 @@ public class ProjectSecurityConfig {
 		 */
 		CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
 		requestHandler.setCsrfRequestAttributeName("_csrf");
+		
+		/*
+		 * Convey to use KeycloakRoleConverter that has custom logic to read JWT access token
+		 * that received from Keycloak. Same will be converted to the Granted authorities
+		 */
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
+        
 			/*
 			 * Request to Spring Security to always create JSESSIONID after initial login is completed.
 			 * Without this, we need to share credentials every time we try to access the secured API. 
@@ -95,8 +104,14 @@ public class ProjectSecurityConfig {
                 .requestMatchers("/myCards").hasRole("USER")
 				.requestMatchers("/user").authenticated()
 				.requestMatchers("/notices","/contact", "/register").permitAll());
-		http.formLogin(withDefaults());
-		http.httpBasic(withDefaults());
+		/*http.formLogin(withDefaults());
+		http.httpBasic(withDefaults());*/
+
+		/*
+		 * Use OAuth2 for authentication and
+		 * leverage JWT token to perform authentication
+		 */
+		http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter);
 		
 		return http.build();
 	}
