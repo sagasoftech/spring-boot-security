@@ -75,11 +75,13 @@ public class ProjectSecurityConfig {
 				 * Filter to send cookies and header value to the UI application after initial login
 				 */
 				.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+				/*
 				.addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
 				.addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
 				.addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
 				.addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
 				.addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
+				*/
 				.authorizeHttpRequests((requests) -> requests
 				/*
 				.requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
